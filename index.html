@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>避難所掲示板</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+        .card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 12px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        textarea {
+            resize: vertical;
+            height: 80px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .post {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            margin-bottom: 10px;
+            border-left: 4px solid #3498db;
+        }
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-bottom: 6px;
+        }
+        .post-name {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .post-text {
+            white-space: pre-wrap;
+            word-break: break-all;
+            font-size: 0.95rem;
+        }
+        .no-posts {
+            text-align: center;
+            color: #95a5a6;
+            font-size: 0.9rem;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🛡️ 避難所掲示板</h1>
+    <div class="subtitle">デュラララチャットが不調のときの伝言板ですニャ</div>
+
+    <div class="card">
+        <div class="form-group">
+            <label for="name">お名前</label>
+            <input type="text" id="name" placeholder="名無しさん">
+        </div>
+        <div class="form-group">
+            <label for="message">メッセージ</label>
+            <textarea id="message" placeholder="ここにメッセージを入力するニャ..."></textarea>
+        </div>
+        <button onclick="addPost()">書き込むニャ 🐾</button>
+    </div>
+
+    <div id="posts-container"></div>
+
+    <script>
+        window.onload = loadPosts;
+
+        function addPost() {
+            const nameInput = document.getElementById('name');
+            const messageInput = document.getElementById('message');
+            
+            let name = nameInput.value.trim() || '名無しさん';
+            let message = messageInput.value.trim();
+
+            if (!message) {
+                alert('メッセージを入力してくださいニャ！');
+                return;
+            }
+
+            const now = new Date();
+            const dateStr = `${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+            const newPost = {
+                name: name,
+                message: message,
+                date: dateStr
+            };
+
+            let posts = JSON.parse(localStorage.getItem('evac_bbs_posts') || '[]');
+            posts.unshift(newPost);
+            localStorage.setItem('evac_bbs_posts', JSON.stringify(posts));
+
+            messageInput.value = '';
+            loadPosts();
+        }
+
+        function loadPosts() {
+            const container = document.getElementById('posts-container');
+            let posts = JSON.parse(localStorage.getItem('evac_bbs_posts') || '[]');
+
+            if (posts.length === 0) {
+                container.innerHTML = '<div class="no-posts">まだ書き込みはございませんニャ。最初のメッセージを残してみるニャ！ 🐱</div>';
+                return;
+            }
+
+            let html = '';
+            posts.forEach(post => {
+                html += `
+                    <div class="post">
+                        <div class="post-header">
+                            <span class="post-name">${escapeHtml(post.name)}</span>
+                            <span>${post.date}</span>
+                        </div>
+                        <div class="post-text">${escapeHtml(post.message)}</div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+            );
+        }
+    </script>
+</body>
+</html>
