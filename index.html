@@ -3,180 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>避難所掲示板</title>
+    <title>避難所掲示板 - もずべや</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: #f4f6f9;
+            background-color: #f7f9fc;
             color: #333;
             max-width: 600px;
             margin: 0 auto;
             padding: 20px;
         }
         h1 {
-            font-size: 1.5rem;
             color: #2c3e50;
+            font-size: 1.5rem;
             text-align: center;
-            margin-bottom: 5px;
-        }
-        .subtitle {
-            text-align: center;
-            font-size: 0.9rem;
-            color: #7f8c8d;
             margin-bottom: 20px;
         }
-        .card {
+        .form-box {
             background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             margin-bottom: 20px;
-        }
-        .form-group {
-            margin-bottom: 12px;
-        }
-        label {
-            display: block;
-            font-weight: bold;
-            font-size: 0.85rem;
-            margin-bottom: 4px;
         }
         input[type="text"], textarea {
             width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
             box-sizing: border-box;
-            font-size: 1rem;
+            font-size: 0.95rem;
         }
         textarea {
-            resize: vertical;
             height: 80px;
+            resize: vertical;
         }
         button {
+            width: 100%;
             background-color: #3498db;
             color: white;
             border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
             font-size: 1rem;
             cursor: pointer;
-            width: 100%;
+            transition: background 0.2s;
         }
         button:hover {
             background-color: #2980b9;
         }
-        .post {
+        .post-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .post-card {
             background: #fff;
-            padding: 15px;
+            padding: 12px 15px;
             border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
             border-left: 4px solid #3498db;
         }
         .post-header {
-            display: flex;
-            justify-content: space-between;
             font-size: 0.85rem;
             color: #7f8c8d;
             margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
         }
         .post-name {
             font-weight: bold;
             color: #2c3e50;
         }
-        .post-text {
+        .post-body {
+            font-size: 0.95rem;
+            line-height: 1.4;
             white-space: pre-wrap;
             word-break: break-all;
-            font-size: 0.95rem;
         }
-        .no-posts {
+        .back-link {
+            display: block;
             text-align: center;
-            color: #95a5a6;
+            margin-top: 25px;
+            color: #3498db;
+            text-decoration: none;
             font-size: 0.9rem;
-            padding: 20px;
+        }
+        .back-link:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
 
     <h1>🛡️ 避難所掲示板</h1>
-    <div class="subtitle">デュラララチャットが不調のときの伝言板ですニャ</div>
 
-    <div class="card">
-        <div class="form-group">
-            <label for="name">お名前</label>
-            <input type="text" id="name" placeholder="名無しさん">
-        </div>
-        <div class="form-group">
-            <label for="message">メッセージ</label>
-            <textarea id="message" placeholder="ここにメッセージを入力するニャ..."></textarea>
-        </div>
-        <button onclick="addPost()">書き込むニャ 🐾</button>
+    <div class="form-box">
+        <input type="text" id="username" placeholder="名前 (空欄で名無し)" value="名無し">
+        <textarea id="message" placeholder="書き込み内容を入力..."></textarea>
+        <button id="sendBtn">書き込む</button>
     </div>
 
-    <div id="posts-container"></div>
+    <div class="post-list" id="postList">
+        <div style="text-align:center; color:#888;">ログを読み込み中...</div>
+    </div>
 
-    <script>
-        window.onload = loadPosts;
+    <a href="https://mozukuharapeko.github.io/" class="back-link">← もずべやトップに戻る</a>
 
-        function addPost() {
-            const nameInput = document.getElementById('name');
-            const messageInput = document.getElementById('message');
-            
-            let name = nameInput.value.trim() || '名無しさん';
-            let message = messageInput.value.trim();
+    <!-- Firebase SDK の読み込み -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // Firebaseの設定
+        const firebaseConfig = {
+            apiKey: "AIzaSyBt0ECZZ0FlI7CCNr16YARDzekn-ZmaL84",
+            authDomain: "mozubeya-bbs.firebaseapp.com",
+            projectId: "mozubeya-bbs",
+            storageBucket: "mozubeya-bbs.firebasestorage.app",
+            messagingSenderId: "710880749875",
+            appId: "1:710880749875:web:75f17e1f78086c558bb646",
+            measurementId: "G-F692FV8Q11"
+        };
+
+        // Firebaseの初期化
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const postsRef = collection(db, "posts");
+
+        // 投稿のリアルタイム取得＆自動表示
+        const q = query(postsRef, orderBy("createdAt", "desc"));
+        onSnapshot(q, (snapshot) => {
+            const postList = document.getElementById("postList");
+            postList.innerHTML = "";
+
+            if (snapshot.empty) {
+                postList.innerHTML = '<div style="text-align:center; color:#888;">まだ書き込みがありません。最初の投稿をどうぞ！</div>';
+                return;
+            }
+
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                const time = data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleString("ja-JP") : "送信中...";
+
+                const card = document.createElement("div");
+                card.className = "post-card";
+                card.innerHTML = `
+                    <div class="post-header">
+                        <span class="post-name">${escapeHtml(data.name)}</span>
+                        <span>${time}</span>
+                    </div>
+                    <div class="post-body">${escapeHtml(data.message)}</div>
+                `;
+                postList.appendChild(card);
+            });
+        });
+
+        // 書き込み処理
+        document.getElementById("sendBtn").addEventListener("click", async () => {
+            const nameInput = document.getElementById("username");
+            const msgInput = document.getElementById("message");
+
+            const name = nameInput.value.trim() || "名無し";
+            const message = msgInput.value.trim();
 
             if (!message) {
-                alert('メッセージを入力してくださいニャ！');
+                alert("メッセージを入力してください！");
                 return;
             }
 
-            const now = new Date();
-            const dateStr = `${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-
-            const newPost = {
-                name: name,
-                message: message,
-                date: dateStr
-            };
-
-            let posts = JSON.parse(localStorage.getItem('evac_bbs_posts') || '[]');
-            posts.unshift(newPost);
-            localStorage.setItem('evac_bbs_posts', JSON.stringify(posts));
-
-            messageInput.value = '';
-            loadPosts();
-        }
-
-        function loadPosts() {
-            const container = document.getElementById('posts-container');
-            let posts = JSON.parse(localStorage.getItem('evac_bbs_posts') || '[]');
-
-            if (posts.length === 0) {
-                container.innerHTML = '<div class="no-posts">まだ書き込みはございませんニャ。最初のメッセージを残してみるニャ！ 🐱</div>';
-                return;
+            try {
+                await addDoc(postsRef, {
+                    name: name,
+                    message: message,
+                    createdAt: serverTimestamp()
+                });
+                msgInput.value = "";
+            } catch (error) {
+                console.error("投稿エラー:", error);
+                alert("送信に失敗しました。");
             }
+        });
 
-            let html = '';
-            posts.forEach(post => {
-                html += `
-                    <div class="post">
-                        <div class="post-header">
-                            <span class="post-name">${escapeHtml(post.name)}</span>
-                            <span>${post.date}</span>
-                        </div>
-                        <div class="post-text">${escapeHtml(post.message)}</div>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-        }
-
+        // 安全対策（HTMLエスケープ）
         function escapeHtml(str) {
-            return str.replace(/[&<>'"]/g, 
-                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
-            );
+            if (!str) return "";
+            return str.replace(/&/g, '&amp;')
+                      .replace(/</g, '&lt;')
+                      .replace(/>/g, '&gt;')
+                      .replace(/"/g, '&quot;')
+                      .replace(/'/g, '&#039;');
         }
     </script>
 </body>
