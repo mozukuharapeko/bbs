@@ -35,6 +35,15 @@
         }
         .post-header {
             color: #000000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .post-meta {
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
         .post-num {
             font-weight: bold;
@@ -47,6 +56,20 @@
         .post-time {
             color: #444444;
             font-size: 0.9rem;
+        }
+        .delete-btn {
+            background: #ffe4e1;
+            border: 1px solid #ffb6c1;
+            color: #c71585;
+            font-size: 11px;
+            padding: 1px 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: sans-serif;
+        }
+        .delete-btn:hover {
+            background: #ffb6c1;
+            color: #fff;
         }
         .post-body {
             margin-top: 4px;
@@ -106,24 +129,27 @@
     <h1>💞もずれんらくちょう💕</h1>
 
     <div class="thread-container" id="postList">
-        <div style="color:#666;">スレッドを読み込み中...</div>
+        <div style="color:#666;">スレッドを一生懸命読み込み中なの…待っててねっ💦</div>
     </div>
 
     <div class="form-box">
-        <div class="form-title">■ レスを書く</div>
+        <div class="form-title">■ レスを書くのっ！✍️</div>
         <div class="input-group">
-            名前：<input type="text" id="username" value="名無しさん＠お腹いっぱい。">
+            お名前：<input type="text" id="username" value="名無しさん＠お腹いっぱい。">
         </div>
         <div class="input-group">
-            <textarea id="message" placeholder="書き込み内容を入力..."></textarea>
+            <textarea id="message" placeholder="可愛いメッセージを入力してね…！🥺"></textarea>
         </div>
-        <button id="sendBtn">書き込む</button>
+        <button id="sendBtn">書き込むのっ！ 🚀</button>
     </div>
 
     <!-- Firebase SDK の読み込み -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, deleteDoc, doc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // 管理者用パスワード
+        const ADMIN_PASSWORD = "mozuku1023";
 
         // Firebaseの設定
         const firebaseConfig = {
@@ -141,27 +167,31 @@
         const db = getFirestore(app);
         const postsRef = collection(db, "posts");
 
-        // 投稿のリアルタイム取得＆自動表示（2ch風に古い順＝上から下へ番号順）
+        // 投稿のリアルタイム取得＆自動表示
         const q = query(postsRef, orderBy("createdAt", "asc"));
         onSnapshot(q, (snapshot) => {
             const postList = document.getElementById("postList");
             postList.innerHTML = "";
 
             if (snapshot.empty) {
-                postList.innerHTML = '<div style="color:#666;">まだレスがありません。1ゲットのチャンス！</div>';
+                postList.innerHTML = '<div style="color:#666;">まだレスが誰もいないみたい…一番乗りしちゃおっ？✨</div>';
                 return;
             }
 
             let index = 1;
-            snapshot.forEach((doc) => {
-                const data = doc.data();
-                const time = data.createdAt ? formatDate(new Date(data.createdAt.seconds * 1000)) : "送信中...";
+            snapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                const docId = docSnap.id;
+                const time = data.createdAt ? formatDate(new Date(data.createdAt.seconds * 1000)) : "送信中なの…⏳";
 
                 const card = document.createElement("div");
                 card.className = "post-card";
                 card.innerHTML = `
                     <div class="post-header">
-                        <span class="post-num">${index}</span> ：<span class="post-name">${escapeHtml(data.name)}</span>：<span class="post-time">${time}</span>
+                        <div class="post-meta">
+                            <span class="post-num">${index}</span> ：<span class="post-name">${escapeHtml(data.name)}</span>：<span class="post-time">${time}</span>
+                        </div>
+                        <button class="delete-btn" onclick="deletePost('${docId}')">🗑️ 削除</button>
                     </div>
                     <div class="post-body">${escapeHtml(data.message)}</div>
                 `;
@@ -169,6 +199,29 @@
                 index++;
             });
         });
+
+        // 削除用グローバル関数
+        window.deletePost = async function(docId) {
+            const inputPass = prompt("ここは管理者さん専用のお部屋だよっ！パスワードを教えてね？🔑");
+            if (inputPass === null) return;
+
+            if (inputPass !== ADMIN_PASSWORD) {
+                alert("パスワードが違うよっ！勝手に消しちゃダメなんだからねっ❌");
+                return;
+            }
+
+            if (!confirm("このレス、本当にキレイさっぱり消しちゃってもいいの…？🥺")) {
+                return;
+            }
+
+            try {
+                await deleteDoc(doc(db, "posts", docId));
+                alert("ぽんっ！キレイに消去完了したよっ🗑️✨");
+            } catch (error) {
+                console.error("削除エラー:", error);
+                alert("むー、上手く消せなかったみたい…: " + error.message);
+            }
+        };
 
         // 書き込み処理
         document.getElementById("sendBtn").addEventListener("click", async () => {
@@ -179,7 +232,7 @@
             const message = msgInput.value.trim();
 
             if (!message) {
-                alert("本文が入っていません！");
+                alert("むーっ！本文が入っていないよ、何か書いてね？🥺");
                 return;
             }
 
@@ -192,11 +245,11 @@
                 msgInput.value = "";
             } catch (error) {
                 console.error("投稿エラー:", error);
-                alert("書き込みに失敗しました。");
+                alert("えーん、書き込みに失敗しちゃった…: " + error.message);
             }
         });
 
-        // 2ch風の日時フォーマット変換 (例: 2026/10/30(金) 17:30:00)
+        // 日時フォーマット変換
         function formatDate(date) {
             const days = ["日", "月", "火", "水", "木", "金", "土"];
             const y = date.getFullYear();
