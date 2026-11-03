@@ -1,276 +1,306 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💞もずれんらくちょう💕 - もずべや</title>
-    <style>
-        body {
-            background-color: #efefef;
-            color: #000000;
-            font-family: "MS PGothic", "ＭＳ Ｐゴシック", "Mona", IPAMonaGothic, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 15px;
-            font-size: 15px;
-            line-height: 1.4;
-        }
-        h1 {
-            color: #cc0000;
-            font-size: 1.4rem;
-            margin-top: 0;
-            margin-bottom: 10px;
-            border-bottom: 2px solid #808080;
-            padding-bottom: 5px;
-        }
-        .thread-container {
-            background-color: #ffffff;
-            border: 1px solid #808080;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-        .post-card {
-            margin-bottom: 16px;
-            word-break: break-all;
-        }
-        .post-header {
-            color: #000000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .post-meta {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .post-num {
-            font-weight: bold;
-            color: #000000;
-        }
-        .post-name {
-            color: #117743;
-            font-weight: bold;
-        }
-        .post-time {
-            color: #444444;
-            font-size: 0.9rem;
-        }
-        .delete-btn {
-            background: #ffe4e1;
-            border: 1px solid #ffb6c1;
-            color: #c71585;
-            font-size: 11px;
-            padding: 1px 6px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-family: sans-serif;
-        }
-        .delete-btn:hover {
-            background: #ffb6c1;
-            color: #fff;
-        }
-        .post-body {
-            margin-top: 4px;
-            margin-left: 18px;
-            white-space: pre-wrap;
-            color: #000000;
-        }
-        .form-box {
-            background: #e0e0e0;
-            border: 1px solid #808080;
-            padding: 12px;
-            margin-top: 20px;
-        }
-        .form-title {
-            font-weight: bold;
-            font-size: 0.9rem;
-            margin-bottom: 8px;
-            color: #333;
-        }
-        .input-group {
-            margin-bottom: 8px;
-        }
-        input[type="text"], textarea {
-            font-family: inherit;
-            border: 1px solid #7f9db9;
-            padding: 4px 6px;
-            font-size: 14px;
-            box-sizing: border-box;
-            background-color: #ffffff;
-        }
-        input[type="text"] {
-            width: 250px;
-            max-width: 100%;
-        }
-        textarea {
-            width: 100%;
-            height: 90px;
-            resize: vertical;
-            display: block;
-        }
-        button {
-            background: #e0e0e0;
-            border: 2px solid;
-            border-color: #ffffff #808080 #808080 #ffffff;
-            padding: 3px 15px;
-            font-size: 14px;
-            cursor: pointer;
-            font-family: inherit;
-        }
-        button:active {
-            border-color: #808080 #ffffff #ffffff #808080;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💞もずれんらくちょう💕 - もずべや</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1f1f23;
+    --orange-soft: #ffd7b8;
+    --orange: #ffb27a;
+    --sky: #cfe3f5;
+    --lavender: #dcd3f3;
+    --cream: #2b2b31;
+    --panel2: #36363d;
+    --ink: #ece6e0;
+    --ink-soft: #a9a39e;
+    --line: #46464e;
+    --on-pastel: #3d2e24;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", "Yu Gothic", sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--bg);
+    padding: 14px 14px 150px;
+  }
+  a { color: #ffb98a; }
+  button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; }
+  .container { max-width: 800px; margin: 0 auto; }
+
+  header {
+    border: 2px solid var(--line);
+    border-radius: 28px;
+    box-shadow: 0 5px 0 #17171a;
+    padding: 14px 22px;
+    margin-bottom: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    background-color: var(--cream);
+    background-image:
+      linear-gradient(90deg, rgba(255,190,140,.07) 50%, transparent 50%),
+      linear-gradient(rgba(255,190,140,.07) 50%, transparent 50%);
+    background-size: 28px 28px;
+  }
+  .logo { font-size: 26px; font-weight: 900; color: #ffbf93; text-shadow: 0 3px 0 #5a3d2a; }
+  .home-link {
+    font-size: 12px; font-weight: 700; text-decoration: none;
+    background: var(--panel2); border: 2px solid var(--line);
+    border-radius: 99px; padding: 3px 14px; color: var(--ink);
+  }
+  .home-link:hover { background: var(--orange-soft); color: var(--on-pastel); }
+
+  .panel { background: var(--cream); border: 2px solid var(--line); border-radius: 22px; overflow: hidden; }
+  .panel-header {
+    padding: 8px 16px; font-weight: 700; color: var(--on-pastel);
+    background: var(--lavender); border-bottom: 2px dashed rgba(0,0,0,.2);
+    display: flex; justify-content: space-between; align-items: center; gap: 8px;
+  }
+  .jump-btn {
+    font: inherit; font-size: 12px; font-weight: 700; cursor: pointer;
+    background: var(--on-pastel); color: var(--orange-soft);
+    border: none; border-radius: 99px; padding: 2px 12px;
+  }
+  #postList { padding: 8px 16px; }
+  .empty { color: var(--ink-soft); padding: 8px 0; }
+
+  .post-card { padding: 10px 0; border-bottom: 2px dotted var(--line); word-break: break-all; }
+  .post-card:last-child { border-bottom: none; }
+  .post-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
+  .post-num {
+    display: inline-block; min-width: 30px; text-align: center; font-size: 11px; font-weight: 700;
+    padding: 1px 8px; border-radius: 99px; background: var(--lemon, #f7e9b8); color: #a8851f; margin-right: 6px;
+  }
+  .post-name { color: #8fd9b0; font-weight: 700; }
+  .post-time { color: var(--ink-soft); font-size: 12px; margin-left: 6px; }
+  .post-body { margin-top: 4px; padding-left: 4px; white-space: pre-wrap; }
+  .delete-btn {
+    font: inherit; font-size: 11px; cursor: pointer;
+    background: transparent; color: #cdbff5; border: 2px solid #6d6590;
+    border-radius: 99px; padding: 0 10px;
+  }
+  .delete-btn:hover { background: #6d6590; color: #fff; }
+
+  /* 下に固定の書き込み欄 */
+  .composer {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+    background: var(--cream);
+    border-top: 2px solid var(--line);
+    box-shadow: 0 -4px 0 #17171a;
+    padding: 8px 14px calc(8px + env(safe-area-inset-bottom, 0px));
+  }
+  .composer-inner { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 6px; }
+  .name-row { display: none; align-items: center; gap: 8px; font-size: 12px; color: var(--ink-soft); }
+  .composer.open .name-row { display: flex; }
+  .dummy-input {
+    font: inherit; color: var(--ink); background: #232327;
+    border: 2px solid var(--line); border-radius: 14px; padding: 6px 12px; width: 100%;
+  }
+  .name-row .dummy-input { max-width: 260px; padding: 3px 12px; }
+  .msg-row { display: flex; gap: 8px; align-items: flex-end; }
+  textarea.dummy-input { resize: none; height: 40px; display: block; flex: 1; min-width: 0; transition: height .15s; }
+  .composer.open textarea.dummy-input { height: 84px; }
+  .send-btn {
+    font: inherit; font-weight: 700; cursor: pointer; border: none;
+    background: var(--orange); color: var(--on-pastel);
+    border-radius: 99px; padding: 8px 18px; height: 40px;
+    box-shadow: 0 3px 0 #c4824f; white-space: nowrap;
+  }
+  .send-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #c4824f; }
+  .send-btn:disabled { opacity: .5; cursor: not-allowed; }
+  .hint { font-size: 11px; color: var(--ink-soft); display: none; }
+  .composer.open .hint { display: block; }
+</style>
 </head>
 <body>
+<div class="container">
+  <header>
+    <div class="logo">💞もずれんらくちょう💕</div>
+    <a class="home-link" href="https://mozukuharapeko.github.io/">🏠 ポータルへ</a>
+  </header>
 
-    <h1>💞もずれんらくちょう💕</h1>
-
-    <div class="thread-container" id="postList">
-        <div style="color:#666;">スレッドを一生懸命読み込み中なの…待っててねっ💦</div>
+  <div class="panel">
+    <div class="panel-header">
+      <span>📢 スレッド</span>
+      <button class="jump-btn" id="jumpBtn" type="button">⬇ 最新へ</button>
     </div>
+    <div id="postList"><div class="empty">スレッドを一生懸命読み込み中なの…待っててねっ💦</div></div>
+  </div>
+</div>
 
-    <div class="form-box">
-        <div class="form-title">■ レスを書くのっ！✍️</div>
-        <div class="input-group">
-            お名前：<input type="text" id="username" value="名無しさん＠お腹いっぱい。">
-        </div>
-        <div class="input-group">
-            <textarea id="message" placeholder="可愛いメッセージを入力してね…！🥺"></textarea>
-        </div>
-        <button id="sendBtn">書き込むのっ！ 🚀</button>
+<!-- 画面下に固定の書き込み欄 -->
+<div class="composer" id="composer">
+  <div class="composer-inner">
+    <div class="name-row">
+      <label for="username">お名前</label>
+      <input type="text" id="username" class="dummy-input" maxlength="30" value="名無しさん＠お腹いっぱい。">
     </div>
+    <div class="msg-row">
+      <textarea id="message" class="dummy-input" aria-label="本文" placeholder="ここに書いてね…！🥺"></textarea>
+      <button id="sendBtn" class="send-btn" type="button">書き込む 🚀</button>
+    </div>
+    <div class="hint">Ctrl + Enter（Macは ⌘ + Enter）でも送信できるよ</div>
+  </div>
+</div>
 
-    <!-- Firebase SDK の読み込み -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, deleteDoc, doc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, deleteDoc, doc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // 管理者用パスワード
-        const ADMIN_PASSWORD = "mozuku1023";
+  // 管理者用パスワード
+  const ADMIN_PASSWORD = "mozuku1023";
 
-        // Firebaseの設定
-        const firebaseConfig = {
-            apiKey: "AIzaSyBt0ECZZ0FlI7CCNr16YARDzekn-ZmaL84",
-            authDomain: "mozubeya-bbs.firebaseapp.com",
-            projectId: "mozubeya-bbs",
-            storageBucket: "mozubeya-bbs.firebasestorage.app",
-            messagingSenderId: "710880749875",
-            appId: "1:710880749875:web:75f17e1f78086c558bb646",
-            measurementId: "G-F692FV8Q11"
-        };
+  const firebaseConfig = {
+    apiKey: "AIzaSyBt0ECZZ0FlI7CCNr16YARDzekn-ZmaL84",
+    authDomain: "mozubeya-bbs.firebaseapp.com",
+    projectId: "mozubeya-bbs",
+    storageBucket: "mozubeya-bbs.firebasestorage.app",
+    messagingSenderId: "710880749875",
+    appId: "1:710880749875:web:75f17e1f78086c558bb646",
+    measurementId: "G-F692FV8Q11"
+  };
 
-        // Firebaseの初期化
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const postsRef = collection(db, "posts");
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const postsRef = collection(db, "posts");
 
-        // 投稿のリアルタイム取得＆自動表示
-        const q = query(postsRef, orderBy("createdAt", "asc"));
-        onSnapshot(q, (snapshot) => {
-            const postList = document.getElementById("postList");
-            postList.innerHTML = "";
+  const postList = document.getElementById("postList");
+  const composer = document.getElementById("composer");
+  const nameInput = document.getElementById("username");
+  const msgInput = document.getElementById("message");
+  const sendBtn = document.getElementById("sendBtn");
 
-            if (snapshot.empty) {
-                postList.innerHTML = '<div style="color:#666;">まだレスが誰もいないみたい…一番乗りしちゃおっ？✨</div>';
-                return;
-            }
+  // 名前をブラウザに覚えておく（失敗しても動くようにtry/catch）
+  try {
+    const saved = localStorage.getItem("mozubbs_name");
+    if (saved) nameInput.value = saved;
+  } catch (e) {}
 
-            let index = 1;
-            snapshot.forEach((docSnap) => {
-                const data = docSnap.data();
-                const docId = docSnap.id;
-                const time = data.createdAt ? formatDate(new Date(data.createdAt.seconds * 1000)) : "送信中なの…⏳";
+  function scrollToBottom() {
+    window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "smooth" });
+  }
+  document.getElementById("jumpBtn").addEventListener("click", scrollToBottom);
 
-                const card = document.createElement("div");
-                card.className = "post-card";
-                card.innerHTML = `
-                    <div class="post-header">
-                        <div class="post-meta">
-                            <span class="post-num">${index}</span> ：<span class="post-name">${escapeHtml(data.name)}</span>：<span class="post-time">${time}</span>
-                        </div>
-                        <button class="delete-btn" onclick="deletePost('${docId}')">🗑️ 削除</button>
-                    </div>
-                    <div class="post-body">${escapeHtml(data.message)}</div>
-                `;
-                postList.appendChild(card);
-                index++;
-            });
-        });
+  // 入力欄にフォーカスで広げる／外れて空なら小さく戻す
+  composer.addEventListener("focusin", () => composer.classList.add("open"));
+  composer.addEventListener("focusout", () => {
+    setTimeout(() => {
+      if (!composer.contains(document.activeElement) && !msgInput.value.trim()) {
+        composer.classList.remove("open");
+      }
+    }, 0);
+  });
 
-        // 削除用グローバル関数
-        window.deletePost = async function(docId) {
-            const inputPass = prompt("ここは管理者さん専用のお部屋だよっ！パスワードを教えてね？🔑");
-            if (inputPass === null) return;
+  // 投稿のリアルタイム表示
+  let firstLoad = true;
+  const q = query(postsRef, orderBy("createdAt", "asc"));
+  onSnapshot(q, (snapshot) => {
+    const nearBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 200;
+    postList.innerHTML = "";
 
-            if (inputPass !== ADMIN_PASSWORD) {
-                alert("パスワードが違うよっ！勝手に消しちゃダメなんだからねっ❌");
-                return;
-            }
+    if (snapshot.empty) {
+      postList.innerHTML = '<div class="empty">まだレスが誰もいないみたい…一番乗りしちゃおっ？✨</div>';
+      return;
+    }
 
-            if (!confirm("このレス、本当にキレイさっぱり消しちゃってもいいの…？🥺")) {
-                return;
-            }
+    let index = 1;
+    snapshot.forEach((docSnap) => {
+      const data = docSnap.data();
+      const time = data.createdAt ? formatDate(new Date(data.createdAt.seconds * 1000)) : "送信中なの…⏳";
 
-            try {
-                await deleteDoc(doc(db, "posts", docId));
-                alert("ぽんっ！キレイに消去完了したよっ🗑️✨");
-            } catch (error) {
-                console.error("削除エラー:", error);
-                alert("むー、上手く消せなかったみたい…: " + error.message);
-            }
-        };
+      const card = document.createElement("div");
+      card.className = "post-card";
+      card.innerHTML = `
+        <div class="post-header">
+          <div>
+            <span class="post-num">${index}</span><span class="post-name">${escapeHtml(data.name)}</span><span class="post-time">${time}</span>
+          </div>
+          <button class="delete-btn" type="button" data-id="${escapeHtml(docSnap.id)}">🗑️ 削除</button>
+        </div>
+        <div class="post-body">${escapeHtml(data.message)}</div>
+      `;
+      postList.appendChild(card);
+      index++;
+    });
 
-        // 書き込み処理
-        document.getElementById("sendBtn").addEventListener("click", async () => {
-            const nameInput = document.getElementById("username");
-            const msgInput = document.getElementById("message");
+    // 最初の表示時、または最新付近を見ていたら自動で最新へ
+    if (firstLoad || nearBottom) {
+      requestAnimationFrame(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    }
+    firstLoad = false;
+  });
 
-            const name = nameInput.value.trim() || "名無しさん＠お腹いっぱい。";
-            const message = msgInput.value.trim();
+  // 削除ボタン（イベント委任）
+  postList.addEventListener("click", (e) => {
+    const btn = e.target.closest(".delete-btn");
+    if (btn) deletePost(btn.dataset.id);
+  });
 
-            if (!message) {
-                alert("むーっ！本文が入っていないよ、何か書いてね？🥺");
-                return;
-            }
+  async function deletePost(docId) {
+    const inputPass = prompt("ここは管理者さん専用のお部屋だよっ！パスワードを教えてね？🔑");
+    if (inputPass === null) return;
+    if (inputPass !== ADMIN_PASSWORD) {
+      alert("パスワードが違うよっ！勝手に消しちゃダメなんだからねっ❌");
+      return;
+    }
+    if (!confirm("このレス、本当にキレイさっぱり消しちゃってもいいの…？🥺")) return;
+    try {
+      await deleteDoc(doc(db, "posts", docId));
+      alert("ぽんっ！キレイに消去完了したよっ🗑️✨");
+    } catch (error) {
+      console.error("削除エラー:", error);
+      alert("むー、上手く消せなかったみたい…: " + error.message);
+    }
+  }
 
-            try {
-                await addDoc(postsRef, {
-                    name: name,
-                    message: message,
-                    createdAt: serverTimestamp()
-                });
-                msgInput.value = "";
-            } catch (error) {
-                console.error("投稿エラー:", error);
-                alert("えーん、書き込みに失敗しちゃった…: " + error.message);
-            }
-        });
+  // 書き込み
+  async function send() {
+    const name = nameInput.value.trim() || "名無しさん＠お腹いっぱい。";
+    const message = msgInput.value.trim();
+    if (!message) {
+      alert("むーっ！本文が入っていないよ、何か書いてね？🥺");
+      return;
+    }
+    sendBtn.disabled = true;
+    try {
+      await addDoc(postsRef, { name, message, createdAt: serverTimestamp() });
+      msgInput.value = "";
+      try { localStorage.setItem("mozubbs_name", name); } catch (e) {}
+      scrollToBottom();
+    } catch (error) {
+      console.error("投稿エラー:", error);
+      alert("えーん、書き込みに失敗しちゃった…: " + error.message);
+    } finally {
+      sendBtn.disabled = false;
+    }
+  }
+  sendBtn.addEventListener("click", send);
+  msgInput.addEventListener("keydown", (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+      e.preventDefault();
+      send();
+    }
+  });
 
-        // 日時フォーマット変換
-        function formatDate(date) {
-            const days = ["日", "月", "火", "水", "木", "金", "土"];
-            const y = date.getFullYear();
-            const m = String(date.getMonth() + 1).padStart(2, '0');
-            const d = String(date.getDate()).padStart(2, '0');
-            const dayName = days[date.getDay()];
-            const hh = String(date.getHours()).padStart(2, '0');
-            const mm = String(date.getMinutes()).padStart(2, '0');
-            const ss = String(date.getSeconds()).padStart(2, '0');
-            return `${y}/${m}/${d}(${dayName}) ${hh}:${mm}:${ss}`;
-        }
+  function formatDate(date) {
+    const days = ["日", "月", "火", "水", "木", "金", "土"];
+    const p = (n) => String(n).padStart(2, "0");
+    return `${date.getFullYear()}/${p(date.getMonth() + 1)}/${p(date.getDate())}(${days[date.getDay()]}) ${p(date.getHours())}:${p(date.getMinutes())}:${p(date.getSeconds())}`;
+  }
 
-        // 安全対策（HTMLエスケープ）
-        function escapeHtml(str) {
-            if (!str) return "";
-            return str.replace(/&/g, '&amp;')
-                      .replace(/</g, '&lt;')
-                      .replace(/>/g, '&gt;')
-                      .replace(/"/g, '&quot;')
-                      .replace(/'/g, '&#039;');
-        }
-    </script>
+  function escapeHtml(str) {
+    if (!str) return "";
+    return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  }
+</script>
 </body>
 </html>
